@@ -1,0 +1,378 @@
+This is a fantastic idea. Transforming that "river" visualization into an interactive experience is the perfect way to handle the complexity. It allows people to see the "big picture" flow first, and then dive into the weeds only when they want to.
+Since I am an AI, I cannot build a downloadable app for the App Store or host a live website for you.
+However, I can do the next best thing.
+I can design the structure and write the actual code for a webpage that you can run immediately on your computer. It will act exactly like the prototype you are describing.
+Here is the plan for turning the text into an interactive experience.
+The Concept: "The Living River of History"
+1. The Main View (The River)
+Imagine a clean webpage. Down the center is a flowing blue path (the river). Along this path are "nodes" or stepping stones with titles and dates.
+ * [The Shared Source (30-100 AD)]
+ * ↓
+ * [Early Councils & Creeds (300-500 AD)]
+ * ↓
+ * [The Great Schism (1054) - East & West]
+ * ↓
+ * [The Reformation (1500s) - Catholic & Protestant]
+2. The Interaction (The Click)
+When a user clicks on a node (e.g., "The Reformation"), the background dims, and a "card" or "modal" pops up over the screen.
+3. The Expanded View (The Card)
+This pop-up card contains the detailed breakdown we created previously, organized neatly.
+ * Header: Title and Date.
+ * The Core Question: What was the fight about?
+ * Side A vs. Side B Columns: A clear comparison of goals, emphases, and the specific Bible verses (ESV references) they lean on.
+The Prototype (Your Turn to Try It)
+Below is a single block of code that contains the Structure (HTML), the Styling (CSS), and the Interactivity (JavaScript) for a prototype of this concept.
+How to use this right now:
+ * Open a plain text editor on your computer (like Notepad on Windows, or TextEdit on Mac—make sure it's in "plain text" mode, not rich text).
+ * Copy the entire code block below.
+ * Paste it into your text editor.
+ * Save the file as christian_history_river.html (make sure it ends in .html, not .txt).
+ * Find that file on your computer and double-click it. It will open in your web browser (Chrome, Firefox, Edge, Safari, etc.).
+Here is the code for your interactive prototype. I have populated the first few sections to show you how it works.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The River of Christian History</title>
+    <style>
+        /* --- Basic Page Styling --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        p.intro {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            color: #666;
+        }
+
+        /* --- The Timeline "River" Structure --- */
+        .timeline-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* The vertical blue line representing the river */
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #3498db; /* River Blue */
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 3px;
+            z-index: -1;
+        }
+
+        /* The clickable nodes */
+        .timeline-node {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Alternating left and right placement */
+        .left { left: 0; text-align: right; }
+        .right { left: 50%; }
+
+        /* The circle on the river */
+        .timeline-node::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: white;
+            border: 4px solid #3498db;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .right::after { left: -10px; }
+
+        /* The content box within the node */
+        .content-box {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid #3498db;
+        }
+
+        .timeline-node:hover .content-box {
+            background-color: #eaf6ff;
+            transform: scale(1.02);
+        }
+
+        /* --- The Expanded View (Modal/Popup) Styling --- */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+            padding-top: 50px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover { color: black; }
+
+        /* --- Styling within the expanded view --- */
+        .comparison-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .side-box {
+            flex: 1;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-top: 4px solid #3498db;
+        }
+        .verse-list {
+            font-family: monospace;
+            background: #eee;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        /* Responsive design for mobile phones */
+        @media screen and (max-width: 600px) {
+            .timeline-container::after { left: 31px; }
+            .timeline-node { width: 100%; padding-left: 70px; padding-right: 25px; text-align: left;}
+            .timeline-node::after { left: 21px; }
+            .right { left: 0%; }
+            .comparison-container { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>The River of Christian History</h1>
+    <p class="intro">A simplified flow of major theological developments and splits. Click on any point in history to see an expanded view of the issues and the Scripture used by different sides.</p>
+
+    <div class="timeline-container">
+        <div class="timeline-node left" onclick="openModal('modal-0')">
+            <div class="content-box">
+                <h2>0. The Shared Source</h2>
+                <p>(c. 30–100 AD)</p>
+                <p>Jesus, Apostles, and the early "ekklesia."</p>
+            </div>
+        </div>
+
+        <div class="timeline-node right" onclick="openModal('modal-1')">
+            <div class="content-box">
+                <h2>1. Early Councils & Creeds</h2>
+                <p>(c. 300–500 AD)</p>
+                <p>Clarifying Who Jesus is (Nicaea).</p>
+            </div>
+        </div>
+
+        <div class="timeline-node left" onclick="openModal('modal-2')">
+            <div class="content-box">
+                <h2>2. The Great Schism</h2>
+                <p>(1054 AD)</p>
+                <p>The split between East & West.</p>
+            </div>
+        </div>
+        
+         <div class="timeline-node right" onclick="openModal('modal-3')">
+            <div class="content-box">
+                <h2>3. The Reformation</h2>
+                <p>(1500s AD)</p>
+                <p>Catholic vs. Protestant: Authority & Salvation.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-0" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal-0')">&times;</span>
+            <h2>0. The Shared Source (c. 30–100)</h2>
+            <p><b>What’s happening:</b> Jesus’ life, death, and resurrection. Apostles preach and plant churches around the Mediterranean. No denominations yet.</p>
+            
+            <h3>Core shared beliefs almost all Christians still hold:</h3>
+            <ul>
+                <li><b>Jesus is Lord and Messiah:</b> Acts 2:36; Romans 10:9–13.</li>
+                <li><b>Salvation by grace through faith:</b> Ephesians 2:8–9.</li>
+                <li><b>Jesus died for our sins and rose:</b> 1 Corinthians 15:1–4.</li>
+                <li><b>The Trinity (Father/Son/Spirit divine):</b> Matthew 28:19; John 1:1–14.</li>
+                <li><b>Call to love and holiness:</b> John 13:34–35; Galatians 5:22–26.</li>
+            </ul>
+            <p><i>This is the deep “underground aquifer” almost all later Christians still drink from.</i></p>
+        </div>
+    </div>
+
+    <div id="modal-1" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal-1')">&times;</span>
+            <h2>1. Early Councils & Creeds (Nicaea)</h2>
+            <h3>Big Question: Is Jesus fully God, or a lesser created being?</h3>
+            
+            <div class="comparison-container">
+                <div class="side-box">
+                    <h4>Side A: "Pro-Nicene" (Became mainstream)</h4>
+                    <p><b>Goal:</b> Protect the worship of Jesus as truly God; guard salvation as God’s own work.</p>
+                    <p><b>Emphasis:</b> The Son is "of one substance" with the Father.</p>
+                    <p class="verse-list">
+                        <b>Verses cited:</b><br>
+                        John 1:1–3, 14<br>
+                        John 20:28<br>
+                        Colossians 2:9<br>
+                        Hebrews 1:3
+                    </p>
+                </div>
+                <div class="side-box" style="border-top-color: #95a5a6;">
+                    <h4>Side B: Arian views</h4>
+                    <p><b>Goal:</b> Guard God’s oneness; avoid saying there are "two Gods."</p>
+                    <p><b>Emphasis:</b> Son is the first and greatest creation, exalted but not equal.</p>
+                    <p class="verse-list">
+                        <b>Verses cited:</b><br>
+                        John 14:28<br>
+                        Colossians 1:15<br>
+                        Proverbs 8:22–25
+                    </p>
+                </div>
+            </div>
+            <p><b>Result:</b> The Nicene Creed affirms Jesus is fully God and fully man.</p>
+        </div>
+    </div>
+    
+      <div id="modal-2" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal-2')">&times;</span>
+            <h2>2. The Great Schism (1054) – East & West</h2>
+            <h3>Big Question: Authority & The Pope</h3>
+            
+            <div class="comparison-container">
+                <div class="side-box">
+                    <h4>West (Rome/Catholic): Papal Primacy</h4>
+                    <p><b>Goal:</b> Preserve unity and provide a final universal court of appeal.</p>
+                    <p><b>Emphasis:</b> Peter’s special role continues specifically in Rome’s bishop (the Pope).</p>
+                    <p class="verse-list">
+                        <b>Verses cited:</b><br>
+                        Matthew 16:18–19 ("You are Peter... keys of the kingdom")<br>
+                        Luke 22:31–32<br>
+                        John 21:15–17
+                    </p>
+                </div>
+                <div class="side-box" style="border-top-color: #95a5a6;">
+                    <h4>East (Orthodox): Conciliarity</h4>
+                    <p><b>Goal:</b> Preserve shared leadership among bishops; avoid one dominating the others.</p>
+                    <p><b>Emphasis:</b> All apostles are foundations; local bishops decide together in council.</p>
+                    <p class="verse-list">
+                        <b>Verses cited:</b><br>
+                        Ephesians 2:19–22 (built on "apostles and prophets")<br>
+                        Acts 15 (The Jerusalem Council)<br>
+                        1 Peter 5:1–3
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+      <div id="modal-3" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal-3')">&times;</span>
+            <h2>3. The Reformation (1500s)</h2>
+            <p>The river splits significantly here. The debate centered on salvation, authority, and sacraments.</p>
+            <h3>Big Question: How are we saved? (Justification)</h3>
+            
+            <div class="comparison-container">
+                <div class="side-box">
+                    <h4>Protestant Reformers (Luther/Calvin)</h4>
+                    <p><b>Goal:</b> Make clear that salvation is entirely God’s gift, not earned.</p>
+                    <p><b>Emphasis:</b> Justification by grace alone through <b>faith alone</b>. Good works are fruit, not root.</p>
+                    <p class="verse-list">
+                        <b>Verses cited:</b><br>
+                        Ephesians 2:8–9<br>
+                        Romans 3:23–28<br>
+                        Romans 4:4–5<br>
+                        Galatians 2:16
+                    </p>
+                </div>
+                <div class="side-box" style="border-top-color: #95a5a6;">
+                    <h4>Roman Catholic (Council of Trent)</h4>
+                    <p><b>Goal:</b> Protect the idea that grace must change us and obedience matters.</p>
+                    <p><b>Emphasis:</b> Justified by grace through faith, but faith must be "formed by love" (works) and cooperate with grace.</p>
+                    <p class="verse-list">
+                        <b>Verses cited:</b><br>
+                        James 2:14–26 ("faith without works is dead")<br>
+                        Matthew 7:21<br>
+                        Romans 2:6–7
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // JavaScript to handle opening and closing the modals
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+            // Prevent scrolling on the main body when modal is open
+            document.body.style.overflow = "hidden"; 
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+            // Re-enable scrolling
+            document.body.style.overflow = "auto"; 
+        }
+
+        // Close modal if user clicks outside the content box
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+        }
+    </script>
+
+</body>
+</html>
+
